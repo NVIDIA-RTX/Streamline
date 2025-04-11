@@ -962,7 +962,7 @@ ComputeStatus D3D11::getTextureDriverData(Resource res, ResourceDriverDataD3D11&
 
     ID3D11Resource* resource = (ID3D11Resource*)(res->native);
 
-    uint32_t hash = (mipOffset << 16) | mipLevels;
+    uint64_t hash = (((mipOffset << 16) | mipLevels) << 32 | kResourceHashTypeSrv);
 
     auto it = m_resourceData.find(resource);
     if (it == m_resourceData.end() || (*it).second.find(hash) == (*it).second.end())
@@ -1005,7 +1005,7 @@ ComputeStatus D3D11::getSurfaceDriverData(Resource res, ResourceDriverDataD3D11&
 
     ID3D11Resource* resource = (ID3D11Resource*)(res->native);
 
-    uint32_t hash = mipOffset << 16;
+    uint32_t hash = ((mipOffset << 48) | kResourceHashTypeUav);
 
     auto it = m_resourceData.find(resource);
     if (it == m_resourceData.end() || (*it).second.find(hash) == (*it).second.end())
