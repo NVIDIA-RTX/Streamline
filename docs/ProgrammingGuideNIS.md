@@ -193,6 +193,6 @@ else
 ```
 
 > **IMPORTANT:**
-> Plase note that **host is responsible for restoring the command buffer(list) state** after calling `slEvaluateFeature`. For more details on which states are affected please see [restore pipeline section](./ProgrammingGuideManualHooking.md#70-restoring-command-listbuffer-state)
+> Please note that **host is responsible for restoring the command buffer(list) state** after calling `slEvaluateFeature`. For more details on which states are affected please see [restore pipeline section](./ProgrammingGuideManualHooking.md#70-restoring-command-listbuffer-state)
 
 
