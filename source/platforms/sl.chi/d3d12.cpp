@@ -2046,7 +2046,6 @@ ComputeStatus D3D12::createBufferResourceImpl(ResourceDescription &resourceDesc,
             break;
         case eHeapTypeUpload:
             bufferDesc.Flags = D3D12_RESOURCE_FLAG_NONE;
-            initialState |= ResourceState::eGenericRead; // Keep validation layer happy when creating NGX resources
             break;
         case eHeapTypeReadback:
             bufferDesc.Flags = D3D12_RESOURCE_FLAG_NONE;
@@ -2055,7 +2054,8 @@ ComputeStatus D3D12::createBufferResourceImpl(ResourceDescription &resourceDesc,
 
     D3D12_HEAP_TYPE NativeHeapType = (D3D12_HEAP_TYPE) resourceDesc.heapType; // TODO : proper conversion !
 
-    D3D12_RESOURCE_STATES NativeInitialState = toD3D12States(initialState);
+    // Buffers must always be created in Common state
+    D3D12_RESOURCE_STATES NativeInitialState = D3D12_RESOURCE_STATE_COMMON;
 
     CD3DX12_HEAP_PROPERTIES heapProp(NativeHeapType, resourceDesc.creationMask, resourceDesc.visibilityMask ? resourceDesc.visibilityMask : m_visibleNodeMask);
 
