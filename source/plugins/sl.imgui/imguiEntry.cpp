@@ -427,6 +427,12 @@ void destroyContext(Context* ctx)
         SL_SAFE_RELEASE(pluginCtx.pd3dSrvDescHeap);
     }
 
+    if (pluginCtx.cmdList != nullptr)
+    {
+        pluginCtx.compute->destroyCommandListContext(pluginCtx.cmdList);
+    }
+    pluginCtx.cmdList = nullptr;
+
     ImGui_ImplWin32_Shutdown();
 
     ImGui::DestroyContext(g_ctx->imgui);
