@@ -72,6 +72,9 @@ struct DispatchDataD3D11
 
 class D3D11 : public Generic
 {
+    static constexpr uint32_t kResourceHashTypeSrv = 0;
+    static constexpr uint32_t kResourceHashTypeUav = 1;
+
     struct PerfData
     {
         ID3D11Query *queryBegin{};
@@ -93,7 +96,7 @@ class D3D11 : public Generic
     ID3D11DeviceContext* m_immediateContext{};
     UINT m_visibleNodeMask = 0;
 
-    std::map<ID3D11Resource*, std::map<uint32_t,ResourceDriverDataD3D11>> m_resourceData;
+    std::map<ID3D11Resource*, std::map<uint64_t,ResourceDriverDataD3D11>> m_resourceData;
     ID3D11SamplerState* m_samplers[eSamplerCount];
 
     thread::ThreadContext<DispatchDataD3D11> m_dispatchContext;
