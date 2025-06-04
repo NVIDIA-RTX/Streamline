@@ -38,6 +38,7 @@
 #include <locale>
 #include <iomanip>
 #include <array>
+#include <chrono>
 
 #ifdef SL_WINDOWS
 #define SL_IGNOREWARNING_PUSH __pragma(warning(push))
