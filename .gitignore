@@ -8,4 +8,5 @@ mr.bat
 fb.bat
 .vs/
 **/*.aps
+!*.log/
 tools/premake5/**
