@@ -569,6 +569,47 @@ sl::Result slEvaluateFeatureInternal(sl::Feature feature, const sl::FrameToken& 
 
 //! D3D12
 
+//! Gets the LUID of the adapter that the app device was created on.
+//! Returns false when the LUID is not available (for example on Vulkan).
+bool getAppDeviceAdapterLuid(LUID& luid)
+{
+    chi::Device device{};
+    if (!ctx.compute || ctx.compute->getDevice(device) != chi::ComputeStatus::eOk || !device)
+    {
+        return false;
+    }
+
+    if (ctx.platform == RenderAPI::eD3D12)
+    {
+        luid = static_cast<ID3D12Device*>(device)->GetAdapterLuid();
+        return true;
+    }
+
+    if (ctx.platform == RenderAPI::eD3D11)
+    {
+        bool found = false;
+        IDXGIDevice* dxgiDevice{};
+        if (SUCCEEDED(static_cast<ID3D11Device*>(device)->QueryInterface(__uuidof(IDXGIDevice), (void**)&dxgiDevice)))
+        {
+            IDXGIAdapter* dxgiAdapter{};
+            if (SUCCEEDED(dxgiDevice->GetAdapter(&dxgiAdapter)))
+            {
+                DXGI_ADAPTER_DESC desc{};
+                if (SUCCEEDED(dxgiAdapter->GetDesc(&desc)))
+                {
+                    luid = desc.AdapterLuid;
+                    found = true;
+                }
+                dxgiAdapter->Release();
+            }
+            dxgiDevice->Release();
+        }
+        return found;
+    }
+
+    return false;
+}
+
 void presentCommon(UINT Flags, void* nativeSwapChain = nullptr, const std::vector<chi::SyncPoint>& presentSyncPoints = {}, chi::Fence* additionalPresentWaitSemaphore = nullptr)
 {
     if (additionalPresentWaitSemaphore)
@@ -614,11 +655,22 @@ void presentCommon(UINT Flags, void* nativeSwapChain = nullptr, const std::vecto
 
         if (!ctx.currentFrame)
         {
-            // First run, find best NVDA adapter
+            // First run, find best NVDA adapter.
+            //
+            // Only use an NVDA adapter that the app renders on. On a hybrid system (for example
+            // a laptop with an NVIDIA dGPU and an eGPU from another vendor) the NVDA adapter can
+            // be idle in runtime D3. QueryVideoMemoryInfo on that adapter then waits for the GPU
+            // power arbiter and stalls every Present for ~150 ms. If no NVDA adapter matches,
+            // ctx.adapter stays null, which is the same path as a system without an NVDA adapter.
+            // If the app device LUID is not available, keep the previous selection.
+            LUID appLuid{};
+            const bool hasAppLuid = getAppDeviceAdapterLuid(appLuid);
             uint32_t hwArch = 0;
             for (uint32_t i = 0; i < kMaxNumSupportedGPUs; i++)
             {
-                if (isVendorNvidia(ctx.sysCaps.adapters[i].vendor) && ctx.sysCaps.adapters[i].architecture > hwArch)
+                const bool rendersOnAdapter = !hasAppLuid ||
+                    (ctx.sysCaps.adapters[i].id.HighPart == appLuid.HighPart && ctx.sysCaps.adapters[i].id.LowPart == appLuid.LowPart);
+                if (isVendorNvidia(ctx.sysCaps.adapters[i].vendor) && ctx.sysCaps.adapters[i].architecture > hwArch && rendersOnAdapter)
                 {
                     hwArch = ctx.sysCaps.adapters[i].architecture;
                     ctx.adapter = reinterpret_cast<IDXGIAdapter3*>(ctx.sysCaps.adapters[i].nativeInterface);
