@@ -9,7 +9,7 @@ The diagram below illustrates this integration. Traditionally, the render pipeli
 
 ![dlssg_docs_overview](./media/dlssg_docs_overview.png "NVIDIA Streamline DLSS Frame Generation Overview")
 
-Version 2.14.1
+Version 2.14.16
 =======
 
 ### 0.0 Integration checklist

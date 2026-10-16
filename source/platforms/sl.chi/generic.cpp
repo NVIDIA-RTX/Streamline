@@ -910,28 +910,36 @@ ComputeStatus Generic::collectGarbage(uint32_t finishedFrame)
         m_finishedFrame.store(finishedFrame);
     }
 
-    std::lock_guard<std::mutex> lock(m_mutexResource);
-
+    // A destroy task can call into external code which then re-enters CHI to
+    // schedule destruction. Snapshot the ready tasks while holding the queue
+    // lock, then invoke them after releasing the lock. Work scheduled by a
+    // task is deliberately deferred until the next collectGarbage call.
+    std::vector<TimestampedLambda> readyTasks;
     {
+        std::lock_guard<std::mutex> lock(m_mutexResource);
         auto it = m_destroyWithLambdas.begin();
         while (it != m_destroyWithLambdas.end())
         {
-            auto& tres = (*it);
-            // Run lambda is
-            if (finishedFrame > (tres.frame + tres.frameDelay))
+            if (finishedFrame > (it->frame + it->frameDelay))
             {
-                SL_LOG_VERBOSE("Calling destroy lambda - scheduled at frame %u - finished frame %u - forced %s", tres.frame, m_finishedFrame.load(), finishedFrame != UINT_MAX ? "no" : "yes");
-                tres.task();
+                readyTasks.push_back(std::move(*it));
                 it = m_destroyWithLambdas.erase(it);
             }
             else
             {
-                it++;
+                ++it;
             }
         }
     }
 
+    for (auto& item : readyTasks)
     {
+        SL_LOG_VERBOSE("Calling destroy lambda - scheduled at frame %u - finished frame %u - forced %s", item.frame, m_finishedFrame.load(), finishedFrame != UINT_MAX ? "no" : "yes");
+        item.task();
+    }
+
+    {
+        std::lock_guard<std::mutex> lock(m_mutexResource);
         auto it = m_resourcesToDestroy.begin();
         while (it != m_resourcesToDestroy.end())
         {

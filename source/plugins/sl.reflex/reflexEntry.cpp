@@ -878,7 +878,8 @@ sl::Result slReflexSetMarker(sl::PCLMarker marker, const sl::FrameToken& frame)
         uint8_t fgMult = 0;
         bool dfgCtrl = false;
         bool driverOk = false;
-        if (ctx.platform != RenderAPI::eVulkan)
+        // NVAPI query - only safe where Reflex low latency is available (NV hw)
+        if (ctx.lowLatencyAvailable && ctx.platform != RenderAPI::eVulkan)
         {
             driverOk = ctx.compute->getFrameGenParams(fgMult, dfgCtrl) == chi::ComputeStatus::eOk;
         }

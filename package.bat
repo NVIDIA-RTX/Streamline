@@ -103,8 +103,11 @@ set sym_dest=%~3
 
 IF EXIST %src%/features (
     set features_src=%src%\features\%arch_nvmake%
+    :: Licenses are shared by all architectures in the features root.
+    set licenses_src=%src%\features
 ) ELSE (
     set features_src=%src%\bin\%arch_vs%
+    set licenses_src=%src%\bin\%arch_vs%
 )
 
 :: Common Plugins
@@ -121,7 +124,7 @@ IF NOT "%copy_cfg%"=="Production" (
 copy %artifacts_src%\sl.dlss\%copy_cfg%_%arch_vs%\sl.dlss.dll %copy_dest% /Y
 copy %artifacts_src%\sl.dlss\%copy_cfg%_%arch_vs%\sl.dlss.pdb %sym_dest% /Y
 
-copy %features_src%\nvngx_dlss.license.txt %copy_dest% /Y
+copy %licenses_src%\nvngx_dlss.license.txt %copy_dest% /Y
 
 IF "%copy_cfg%"=="Production" (
     copy %features_src%\nvngx_dlss.dll %copy_dest% /Y
@@ -170,7 +173,7 @@ IF "%copy_cfg%"=="Production" (
 copy %artifacts_src%\sl.nis\%copy_cfg%_%arch_vs%\sl.nis.dll %copy_dest% /Y
 copy %artifacts_src%\sl.nis\%copy_cfg%_%arch_vs%\sl.nis.pdb %sym_dest% /Y
 
-copy %features_src%\nis.license.txt %copy_dest% /Y
+copy %licenses_src%\nis.license.txt %copy_dest% /Y
 
 :: NvPerf
 copy %artifacts_src%\sl.nvperf\%copy_cfg%_%arch_vs%\sl.nvperf.dll %copy_dest% /Y
@@ -188,7 +191,7 @@ copy %artifacts_src%\sl.directsr\%copy_cfg%_%arch_vs%\sl.directsr.pdb %sym_dest%
 copy %artifacts_src%\sl.reflex\%copy_cfg%_%arch_vs%\sl.reflex.dll %copy_dest% /Y
 copy %artifacts_src%\sl.reflex\%copy_cfg%_%arch_vs%\sl.reflex.pdb %sym_dest% /Y
 
-copy %features_src%\reflex.license.txt %copy_dest% /Y
+copy %licenses_src%\reflex.license.txt %copy_dest% /Y
 
 IF "%arch_vs%"=="x64" (
 copy %src%\external\reflex-sdk-vk\lib\NvLowLatencyVk.dll %copy_dest% /Y

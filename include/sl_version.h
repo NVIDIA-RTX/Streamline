@@ -23,7 +23,7 @@
 
 #define SL_VERSION_MAJOR 2
 #define SL_VERSION_MINOR 14
-#define SL_VERSION_PATCH 1
+#define SL_VERSION_PATCH 16
 
 #include <cstdint>
 #include <string>

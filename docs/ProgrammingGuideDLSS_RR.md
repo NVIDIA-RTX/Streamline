@@ -6,7 +6,7 @@ Streamline - DLSS-RR
 >The focus of this guide is on using Streamline to integrate DLSS Ray Reconstruction (DLSS-RR) into an application.  For more information about DLSS-RR itself, please visit the [NVIDIA Developer DLSS Page](https://developer.nvidia.com/rtx/dlss)
 >For information on user interface considerations when using the DLSS-RR plugin, please see the ["RTX UI Developer Guidelines.pdf"](<RTX UI Developer Guidelines.pdf>) document included in the DLSS SDK.
 
-Version 2.14.1
+Version 2.14.16
 =======
 
 ### 1.0 INITIALIZE AND SHUTDOWN

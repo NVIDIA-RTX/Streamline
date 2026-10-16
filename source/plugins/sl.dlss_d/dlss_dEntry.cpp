@@ -1196,6 +1196,8 @@ Result slFreeResources(Feature feature, const sl::ViewportHandle& viewport)
             // but that can cause confusion for who reads telemetry data.
             ctx.ngxContext->params->Set(NVSDK_NGX_Parameter_DLSS_Denoise_Mode, NVSDK_NGX_DLSS_Denoise_Mode_Off);
         }
+        ctx.ngxContext->params->Set(NVSDK_NGX_Parameter_DLSS_WORLD_TO_VIEW_MATRIX, (void*)nullptr);
+        ctx.ngxContext->params->Set(NVSDK_NGX_Parameter_DLSS_VIEW_TO_CLIP_MATRIX, (void*)nullptr);
         ctx.viewports.erase(it);
         return Result::eOk;
     }
