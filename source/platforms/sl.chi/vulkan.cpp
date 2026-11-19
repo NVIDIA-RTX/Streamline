@@ -3689,12 +3689,15 @@ ComputeStatus Vulkan::getNativeFormat(Format format, NativeFormat& native)
         case VK_FORMAT_B8G8R8A8_UNORM:              format = eFormatBGRA8UN; break;
         case VK_FORMAT_R8G8B8A8_UNORM:              format = eFormatRGBA8UN; break;
         case VK_FORMAT_R8G8B8A8_SNORM:              format = eFormatRGBA8SN; break;
+        case VK_FORMAT_R8_UNORM:                    format = eFormatR8UN; break;
         case VK_FORMAT_R32G32B32A32_SFLOAT:         format = eFormatRGBA32F; break;
         case VK_FORMAT_R32G32B32_SFLOAT:            format = eFormatRGB32F; break;
         case VK_FORMAT_R16G16B16A16_SFLOAT:         format = eFormatRGBA16F; break;
         case VK_FORMAT_R16G16B16_SFLOAT:            format = eFormatRGB16F; break;
         case VK_FORMAT_B10G11R11_UFLOAT_PACK32:     format = eFormatRGB11F; break;
         case VK_FORMAT_R16G16_SFLOAT:               format = eFormatRG16F; break;
+        case VK_FORMAT_R16G16_UINT:                 format = eFormatRG16UI; break;
+        case VK_FORMAT_R16G16_SINT:                 format = eFormatRG16SI; break;
         case VK_FORMAT_R16_SFLOAT:                  format = eFormatR16F; break;
         case VK_FORMAT_R8_UINT:                     format = eFormatR8UI; break;
         case VK_FORMAT_R16_UINT:                    format = eFormatR16UI; break;
